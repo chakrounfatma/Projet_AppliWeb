@@ -1,0 +1,106 @@
+/* =========================
+      PROFILE PAGE
+========================= */
+
+.profile {
+  height: 100vh;
+  background: url("../assets/bg.jpg") no-repeat center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  position: relative;
+}
+
+/* dark overlay */
+.profile::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0.9));
+}
+
+/* =========================
+        CARD PROFILE
+========================= */
+
+.profile-card {
+  position: relative;
+  z-index: 2;
+
+  width: 380px;
+  padding: 30px;
+
+  border-radius: 20px;
+  text-align: center;
+
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
+
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* TITLE */
+.profile-card h1 {
+  font-family: "Luckiest Guy", cursive;
+  color: white;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 10px black;
+}
+
+/* INFO TEXT */
+.profile-card p {
+  color: white;
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+/* LABEL (gras) */
+.profile-card p b {
+  color: #36d1dc;
+}
+
+/* =========================
+        BUTTON
+========================= */
+
+.profile-card button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+
+  border: none;
+  border-radius: 12px;
+
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+
+  background: linear-gradient(45deg, #36d1dc, #5b86e5);
+  color: white;
+
+  transition: all 0.3s ease;
+}
+
+.profile-card button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #5b86e5;
+}
+
+/* =========================
+        ANIMATION
+========================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
