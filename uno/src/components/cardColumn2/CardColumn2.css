@@ -1,0 +1,11 @@
+.cardcolumn {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+
+  transform: rotate(90deg);
+
+  bottom: 50%;
+  left: 0%;
+}

@@ -1,0 +1,34 @@
+.drawing-card {
+  position: fixed;
+  background-color: aliceblue;
+
+  left: 25%;
+  top: 5%;
+
+  width: 110px;
+  aspect-ratio: 2 / 3;
+
+  overflow: hidden;
+  border: 2px solid black;
+  border-radius: 10px; /* Adds rounded corners */
+  margin: 2px;
+  /* Stacked deck effect - each shadow is another card */
+  box-shadow:
+    6px 8px 0 rgba(0, 0, 0, 0.2),
+    /* Card 5 (furthest) */ 12px 14px 0 rgba(0, 0, 0, 0.4),
+    /* Card 4 */ 10px 12px 0 rgba(0, 0, 0, 0.5),
+    /* Card 3 */ 8px 10px 0 rgba(0, 0, 0, 0.7),
+    6px 8px 0 rgba(0, 0, 0, 0.9),
+    4px 6px 0 rgba(0, 0, 0, 0.4),
+    /* Card 4 */ 2px 4px 0 rgba(0, 0, 0, 0.5),
+    /* Card 3 */ 1px 2px 0 rgba(0, 0, 0, 0.7);
+
+  /* Main card is on top */
+}
+
+.drawing-card-background {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+}

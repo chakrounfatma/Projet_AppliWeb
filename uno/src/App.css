@@ -1,0 +1,12 @@
+.app {
+  position: fixed; /* Prevents scrolling */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Allows content to scroll, not the background */
+
+  background-image: url("/carpet.jpg");
+  background-repeat: repeat; /* Tiles the image */
+  background-size: auto; /* Keeps original size (no stretching) */
+}
