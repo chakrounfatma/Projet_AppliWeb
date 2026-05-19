@@ -43,7 +43,9 @@ function Home() {
     <div className="home">
       <div className="overlay"></div>
       <header>
-        <h1 className="bienvenue">Bienvenue {user ? user : "sur UNO Game"}</h1>
+        <h1 className="bienvenue">
+          Bienvenue {user ? user.prenom : "sur UNO Game"}
+        </h1>
       </header>
       <div className="container">
         <h1 className="title">UNO Game </h1>
@@ -55,6 +57,16 @@ function Home() {
           ) : (
             <button className="btn secondary" onClick={handlePlay}>
               Jouer
+            </button>
+          )}
+          {user ? (
+            <></>
+          ) : (
+            <button
+              className="btn secondary"
+              onClick={() => navigate("/register")}
+            >
+              Creer un compte
             </button>
           )}
           <button
