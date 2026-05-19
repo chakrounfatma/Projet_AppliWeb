@@ -40,9 +40,11 @@ public class User {
     @OneToMany(mappedBy = "joueur")
     private List<Historique> historiques;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "joueur")
-    private List<Chat> messages;
+    @OneToMany(mappedBy = "expediteur")
+    private List<Chat> messagesEnvoyes;
+
+    @OneToMany(mappedBy = "destinataire")
+    private List<Chat> messagesRecus;
 
     public User() {}
     public User(String nom, String prenom, String email, String password) {

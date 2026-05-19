@@ -104,3 +104,15 @@
     transform: translateY(0);
   }
 }
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  padding: 20px;
+}
+
+/* garde tes cards intactes */
+.profile-card {
+  width: 420px; /* ou ajuste selon ton design */
+}

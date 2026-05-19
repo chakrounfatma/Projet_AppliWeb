@@ -34,6 +34,15 @@
   animation: fadeIn 1s ease-in-out;
 }
 
+.name {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 40px;
+  text-shadow: 4px 4px 15px black;
+  animation: fadeIn 1s ease-in-out;
+}
+
 /* Menu */
 .menu {
   display: flex;

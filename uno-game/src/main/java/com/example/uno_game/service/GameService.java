@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.uno_game.model.Carte;
+import com.example.uno_game.model.Historique;
+import com.example.uno_game.dto.HistoriqueDTO;
 import com.example.uno_game.model.Partie;
 import com.example.uno_game.model.User;
 import com.example.uno_game.model.enums.CarteType;
@@ -16,8 +18,11 @@ import com.example.uno_game.model.enums.EtatPartie;
 import com.example.uno_game.model.enums.PositionCarte;
 import com.example.uno_game.model.enums.SensJeu;
 import com.example.uno_game.repository.CarteRepository;
+import com.example.uno_game.repository.HistoriqueRepository;
 import com.example.uno_game.repository.PartieRepository;
 import com.example.uno_game.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class GameService {
@@ -29,6 +34,9 @@ public class GameService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private HistoriqueRepository historiqueRepository;
 
     private List<Carte> genererDeck(Partie partie) {
     List<Carte> deck = new ArrayList<>();
@@ -93,6 +101,7 @@ public Partie createPartie(List<Integer> userIds) {
             carte.setJoueur(joueur);
             carte.setPosition(PositionCarte.MAIN);
             carte.setPartie(partie);
+            carte.setDateJoue(LocalDateTime.now());
             aSauver.add(carte);
         }
     }
@@ -101,6 +110,7 @@ public Partie createPartie(List<Integer> userIds) {
     Carte first = deck.remove(0);
     first.setPosition(PositionCarte.DEFAUSSE);
     first.setPartie(partie);
+    first.setDateJoue(LocalDateTime.now());
     partie.setCouleurActive(first.getCouleur());
     partie.setValeurActive(first.getValeur());
     aSauver.add(first);
@@ -110,6 +120,7 @@ public Partie createPartie(List<Integer> userIds) {
         c.setPosition(PositionCarte.PIOCHE);
         c.setJoueur(null);
         c.setPartie(partie);
+        c.setDateJoue(LocalDateTime.now());
         aSauver.add(c);
     }
 
@@ -121,40 +132,88 @@ public Partie createPartie(List<Integer> userIds) {
 
     return partieRepository.save(partie);
 }
+public Carte getTopCard(int partieId) {
+    return carteRepository.findTopByPartieIdAndPositionOrderByIdDesc(
+            partieId,
+            PositionCarte.DEFAUSSE
+    );
+}
+// @Transactional
+// public void jouerCarte(int joueurId, int carteId, String couleurChoisie) {
+
+//     Carte carte = carteRepository.findById(carteId).orElseThrow();
+//     Partie partie = carte.getPartie();
+
+    
+//     if (partie.getJoueurActuel().getId() != joueurId) {
+//         throw new RuntimeException("Ce n'est pas ton tour !");
+//     }
+
+    
+//     if (!estCarteValide(carte, partie)) {
+//         throw new RuntimeException("Carte invalide !");
+//     }
+//     carte.setDateJoue(LocalDateTime.now());
+//     carte.setPosition(PositionCarte.DEFAUSSE);
+   
+//     carteRepository.save(carte);
+
+
+   
+//     if (carte.getType() == CarteType.WILD || carte.getType() == CarteType.PLUS4) {
+//         partie.setCouleurActive(couleurChoisie);
+//         partie.setValeurActive(-1);
+//     } else {
+//         partie.setCouleurActive(carte.getCouleur());
+//         partie.setValeurActive(carte.getValeur());
+//     }
+
+    
+//     appliquerEffet(carte, partie);
+
+   
+//     passerTour(partie);
+
+//     partieRepository.save(partie);
+// }
+@Transactional
 public void jouerCarte(int joueurId, int carteId, String couleurChoisie) {
 
     Carte carte = carteRepository.findById(carteId).orElseThrow();
     Partie partie = carte.getPartie();
 
-    
     if (partie.getJoueurActuel().getId() != joueurId) {
         throw new RuntimeException("Ce n'est pas ton tour !");
     }
 
-    
     if (!estCarteValide(carte, partie)) {
         throw new RuntimeException("Carte invalide !");
     }
 
-    
+    carte.setDateJoue(LocalDateTime.now());
     carte.setPosition(PositionCarte.DEFAUSSE);
-    carte.setJoueur(null);
+    //carte.setJoueur(null);
+    carteRepository.save(carte);
 
-   
+    // update couleur active
     if (carte.getType() == CarteType.WILD || carte.getType() == CarteType.PLUS4) {
         partie.setCouleurActive(couleurChoisie);
+        partie.setValeurActive(-1);
     } else {
         partie.setCouleurActive(carte.getCouleur());
         partie.setValeurActive(carte.getValeur());
     }
 
-    
-    appliquerEffet(carte, partie);
+    // effet qui peut modifier le joueur courant
+    boolean skipNormalTurn = appliquerEffet(carte, partie);
 
-   
-    passerTour(partie);
+    // seulement si aucun effet spécial ne gère le tour
+    if (!skipNormalTurn) {
+        passerTour(partie);
+    }
+    User joueur = userRepository.findById(joueurId).orElseThrow();
+    verifierGagnant(partie, joueur);
 
-    carteRepository.save(carte);
     partieRepository.save(partie);
 }
 private boolean estCarteValide(Carte carte, Partie partie) {
@@ -164,7 +223,37 @@ private boolean estCarteValide(Carte carte, Partie partie) {
     || carte.getType() == CarteType.WILD
     || carte.getType() == CarteType.PLUS4;
 }
-private void appliquerEffet(Carte carte, Partie partie) {
+// private void appliquerEffet(Carte carte, Partie partie) {
+
+//     List<User> joueurs = partie.getListJoueur();
+//     int index = joueurs.indexOf(partie.getJoueurActuel());
+
+//     switch (carte.getType()) {
+
+//         case SKIP:
+//             index = (index + 2) % joueurs.size();
+//             partie.setJoueurActuel(joueurs.get(index));
+//             return;
+
+//         case REVERSE:
+//             partie.setSens(
+//                 partie.getSens() == SensJeu.HORAIRE ?
+//                 SensJeu.ANTI_HORAIRE :
+//                 SensJeu.HORAIRE
+//             );
+//             break;
+
+//         case PLUS2:
+//             piocherCartes(joueurs.get((index + 1) % joueurs.size()), 2, partie);
+//             break;
+
+//         case PLUS4:
+//             piocherCartes(joueurs.get((index + 1) % joueurs.size()), 4, partie);
+//             break;
+//     }
+// }
+
+private boolean appliquerEffet(Carte carte, Partie partie) {
 
     List<User> joueurs = partie.getListJoueur();
     int index = joueurs.indexOf(partie.getJoueurActuel());
@@ -174,7 +263,7 @@ private void appliquerEffet(Carte carte, Partie partie) {
         case SKIP:
             index = (index + 2) % joueurs.size();
             partie.setJoueurActuel(joueurs.get(index));
-            return;
+            return true; // on a déjà géré le tour
 
         case REVERSE:
             partie.setSens(
@@ -182,15 +271,20 @@ private void appliquerEffet(Carte carte, Partie partie) {
                 SensJeu.ANTI_HORAIRE :
                 SensJeu.HORAIRE
             );
-            break;
+            return false;
 
         case PLUS2:
-            piocherCartes(joueurs.get((index + 1) % joueurs.size()), 2, partie);
-            break;
+            User next = joueurs.get((index + 1) % joueurs.size());
+            piocherCartes(next, 2, partie);
+            return false;
 
         case PLUS4:
-            piocherCartes(joueurs.get((index + 1) % joueurs.size()), 4, partie);
-            break;
+            User next4 = joueurs.get((index + 1) % joueurs.size());
+            piocherCartes(next4, 4, partie);
+            return false;
+
+        default:
+            return false;
     }
 }
 private void passerTour(Partie partie) {
@@ -224,5 +318,56 @@ private void piocherCartes(User joueur, int nb, Partie partie) {
     }
 
     carteRepository.saveAll(cartesPiochees);
+}
+@Transactional
+public Carte piocherUneCarte( int partieId) {
+
+    Partie partie = partieRepository.findById(partieId).orElseThrow();
+
+    User joueur = partie.getJoueurActuel();
+
+    List<Carte> pioche = carteRepository.findByPartieAndPosition(
+            partie,
+            PositionCarte.PIOCHE
+    );
+
+    if (pioche.isEmpty()) {
+        throw new RuntimeException("La pioche est vide !");
+    }
+
+    Collections.shuffle(pioche);
+
+    Carte carte = pioche.get(0);
+
+    carte.setJoueur(joueur);
+    carte.setPosition(PositionCarte.MAIN);
+
+    carteRepository.save(carte);
+
+    return carte;
+}
+private void verifierGagnant(Partie partie, User joueur) {
+
+    List<Carte> cartes = carteRepository.findByJoueurIdAndPartieIdAndPosition(
+            joueur.getId(),
+            partie.getId(),
+            PositionCarte.MAIN
+    );
+
+    if (cartes.isEmpty()) {
+
+        Historique h = new Historique();
+        h.setPartie(partie);
+        h.setJoueur(joueur);
+        h.setDate(LocalDateTime.now());
+
+        historiqueRepository.save(h);
+
+        partie.setEtat(EtatPartie.terminee);
+        partieRepository.save(partie);
+    }
+}
+public List<HistoriqueDTO> getHistorique() {
+    return historiqueRepository.findHistorique();
 }
 }

@@ -38,7 +38,7 @@ public class AuthController {
 
         User existingUser = userRepository.findByEmail(user.getEmail());
         System.out.println("EMAIL = " + user.getEmail());
-System.out.println("PASSWORD = " + user.getPassword());
+        System.out.println("PASSWORD = " + user.getPassword());
 
         if (existingUser == null) {
             throw new RuntimeException("User not found");

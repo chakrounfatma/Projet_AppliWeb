@@ -20,12 +20,13 @@ function Home() {
   navigate("/");
 };
 const handlePlay = async () => {
-
+  
   try {
 
     const response = await axios.post(
       "http://localhost:8083/game/create",
-      [1]
+      [1,3]
+      
     );
 
     const partie = response.data;
@@ -33,9 +34,11 @@ const handlePlay = async () => {
     navigate("/game", {
       state: {
         partieId: partie.id,
-        joueurId: 1
+        joueurId: 1,
+        opponentId: 2
       }
     });
+    
 
   } catch (error) {
     console.error(error);
@@ -47,7 +50,7 @@ const handlePlay = async () => {
 
       <div className="overlay"></div>
       <header>
-        <h1>Bienvenue {user ? user.prenom : "sur UNO Game"}</h1>
+        <h1 className="name">Bienvenue {user ? user.prenom : "sur UNO Game"}</h1>
       </header>
       <div className="container">
         <h1 className="title">UNO Game </h1>
@@ -73,8 +76,8 @@ const handlePlay = async () => {
           )}
           
           
-          <button className="btn ghost">Classement</button>
-          <button className="btn ghost">Règles du jeu</button>
+          <button className="btn ghost" onClick={() => navigate("/historique")}>Historique</button>
+          <button className="btn ghost" onClick={() => navigate("/rules")}>Règles du jeu</button>
           
         </div>
       </div>

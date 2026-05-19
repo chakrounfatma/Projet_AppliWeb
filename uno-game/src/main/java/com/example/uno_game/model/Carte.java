@@ -1,5 +1,7 @@
 package com.example.uno_game.model;
 
+import java.time.LocalDateTime;
+
 import com.example.uno_game.model.enums.CarteType;
 import com.example.uno_game.model.enums.PositionCarte;
 
@@ -22,6 +24,7 @@ public class Carte {
 
     private String couleur;
     private int valeur;
+    private LocalDateTime dateJoue;
 
     @Enumerated(EnumType.STRING)
     private CarteType type;
@@ -72,5 +75,11 @@ public class Carte {
         return joueur;
     }
 
+    public LocalDateTime getDateJoue() {
+        return dateJoue;
+    }
+    public void setDateJoue(LocalDateTime dateJoue) {
+        this.dateJoue = dateJoue;
+    }
 
 }

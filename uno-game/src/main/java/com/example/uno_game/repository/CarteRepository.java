@@ -15,5 +15,6 @@ public interface CarteRepository extends JpaRepository<Carte, Integer> {
     List<Carte> findByJoueurIdAndPosition(int joueurId, PositionCarte position);
     List<Carte> findByPartieIdAndPosition(int partieId, PositionCarte position);
     List<Carte> findByJoueurIdAndPartieIdAndPosition(int joueurId,int partieId, PositionCarte position);
+    Carte findTopByPartieIdAndPositionOrderByIdDesc(int partieId,PositionCarte position);
 }
 

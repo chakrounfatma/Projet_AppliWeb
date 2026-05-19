@@ -11,7 +11,7 @@ export const getHand = (joueurId, partieId) =>
     axios.get(`${API}/hand/${joueurId}/${partieId}`);
 
 export const getTopCard = (partieId) =>
-    axios.get(`${API}/top-card/${partieId}`);
+    axios.get(`${API}/top/${partieId}`);
 
 export const playCard = (joueurId, carteId, couleur = null) => {
     let url = `${API}/play?joueurId=${joueurId}&carteId=${carteId}`;
@@ -22,6 +22,15 @@ export const playCard = (joueurId, carteId, couleur = null) => {
 
     return axios.post(url);
 };
+export const drawCard = async (joueurId, partieId) => {
+    const response = await axios.post(
+        `${API}/draw?joueurId=${joueurId}&partieId=${partieId}`
+    );
+
+    return response.data;
+};
+export const getRandomPlayer = () =>
+    axios.get(`${API}/random-player`);
 
 
 export const getGameState = (partieId) =>

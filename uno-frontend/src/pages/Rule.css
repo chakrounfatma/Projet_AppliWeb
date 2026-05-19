@@ -1,0 +1,79 @@
+.rules-page {
+  min-height: 100vh;
+  background: url("../assets/bg.jpg") no-repeat center/cover;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  padding: 30px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.7),
+    rgba(0,0,0,0.9)
+  );
+}
+
+.rules-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 900px;
+}
+
+.rules-title {
+  text-align: center;
+  color: white;
+  font-size: 4rem;
+  margin-bottom: 30px;
+  font-family: 'Luckiest Guy', cursive;
+  text-shadow: 4px 4px 15px black;
+}
+
+.rules-card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  border-radius: 25px;
+  color: white;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+.rules-card h2 {
+  margin-top: 20px;
+  color: #ffcc70;
+}
+
+.rules-card p,
+.rules-card li {
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.rules-card ul {
+  padding-left: 20px;
+}
+
+.back-btn {
+  margin-top: 30px;
+  width: 220px;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  background: linear-gradient(45deg, #36d1dc, #5b86e5);
+  color: white;
+  transition: 0.3s;
+}
+
+.back-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 20px #5b86e5;
+}

@@ -41,6 +41,8 @@ public class Partie {
     @Enumerated(EnumType.STRING)
     private SensJeu sens;
 
+    
+
     private String couleurActive;
 
     private Integer valeurActive;

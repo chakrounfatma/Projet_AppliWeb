@@ -8,4 +8,5 @@ import com.example.uno_game.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
     User findByEmail(String email);
+    //User findByIdAndPartieIdAndPosition(int joueurId, int partieId, String position);
 }
